@@ -1,9 +1,7 @@
 <template>
   <nav class="w-full p-6 bg-transparent">
     <div class="flex items-center justify-between">
-      <div>
-        <Tailwind />
-      </div>
+      <div></div>
 
       <div class="md:hidden">
         <button @click="drawer">
@@ -78,7 +76,6 @@
           @click="isOpen = false"
           class="flex w-full items-center p-4 border-b"
         >
-          <Tailwind />
         </span>
 
         <ul class="divide-y font-sans">
