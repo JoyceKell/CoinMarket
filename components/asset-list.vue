@@ -1,5 +1,10 @@
 <template>
   <div class="flex flex-col">
+    <highestLowestPrice
+      :lowest-price="lowestPrice"
+      :highest-price="highestPrice"
+      :id="id"
+    />
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
         <div
@@ -18,12 +23,12 @@
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  QuoteId
+                  Id do Ativo de Cotação
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  exchange Id
+                  Exchange
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -51,10 +56,10 @@
                   <div class="flex items-center">
                     <div class="ml-4">
                       <div class="text-sm font-medium text-gray-900">
-                        {{ fdata.name }}
+                        {{ fdata.baseId }}
                       </div>
                       <div class="text-sm text-gray-500">
-                        {{ fdata.quoteSymbol }}
+                        {{ fdata.baseSymbol }}
                       </div>
                     </div>
                   </div>
@@ -98,20 +103,27 @@
 
 <script>
 import api from "../service/api";
-
+import highestLowestPrice from "./highest-lowest-price.vue";
 export default {
   data() {
     return {
       assets: [],
+      lowestPrice: null,
+      highestPrice: null,
+      id: this.$route.params.id,
     };
   },
 
   async mounted() {
-    const id = this.$route.params.id;
     try {
-      const { data } = await api.get(`/assets/${id}/markets`);
+      const { data } = await api.get(`/assets/${this.id}/markets`);
       this.assets = data.data;
-      console.log(this.assets, `/assets/${id}/markets`);
+      this.lowestPrice = Math.min(
+        ...this.assets.map((asset) => asset.priceUsd)
+      );
+      this.highestPrice = Math.max(
+        ...this.assets.map((asset) => asset.priceUsd)
+      );
     } catch (error) {
       console.error(error);
     }
