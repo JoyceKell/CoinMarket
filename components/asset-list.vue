@@ -150,7 +150,7 @@ export default {
 
         page++;
       }
-      console.log(fullArr, "dsksakd");
+
       this.assets = fullArr;
     },
 
@@ -171,7 +171,6 @@ export default {
     this.highestPrice = Math.max(
       ...this.assets.map((asset) => Number(asset.priceUsd))
     );
-    console.log(this.lowestPrice, this.highestPrice);
   },
 };
 </script>
