@@ -6,5 +6,9 @@
 
 <script>
 import Conversion from "../components/conversion.vue";
-export default {};
+export default {
+  components: {
+    Conversion,
+  },
+};
 </script>

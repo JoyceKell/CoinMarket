@@ -1,8 +1,6 @@
 <template>
   <nav class="w-full p-6 bg-transparent">
-    <div class="flex items-center justify-between">
-      <div></div>
-
+    <div class="flex items-center justify-end">
       <div class="md:hidden">
         <button @click="drawer">
           <svg
