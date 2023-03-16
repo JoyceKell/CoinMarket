@@ -18,12 +18,22 @@
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  QuoteId
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  exchange Id
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Preço
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Variação (24h)
+                  Volume (%)
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -36,7 +46,7 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <tr :key="fdata.rank" v-for="fdata in this.cryptos">
+              <tr :key="fdata.id" v-for="fdata in this.assets">
                 <td class="px-6 py-4 whitespace-no-wrap">
                   <div class="flex items-center">
                     <div class="ml-4">
@@ -44,10 +54,16 @@
                         {{ fdata.name }}
                       </div>
                       <div class="text-sm text-gray-500">
-                        {{ fdata.symbol }}
+                        {{ fdata.quoteSymbol }}
                       </div>
                     </div>
                   </div>
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">
+                  {{ fdata.quoteId }}
+                </td>
+                <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">
+                  {{ fdata.exchangeId }}
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap">
                   <div class="text-sm text-gray-900">
@@ -64,19 +80,11 @@
                         fdata.changePercent24Hr < 0,
                     }"
                   >
-                    {{ Number(fdata.changePercent24Hr).toFixed(2) }}%
+                    {{ Number(fdata.volumePercent).toFixed(2) }}%
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">
                   ${{ Number(fdata.volumeUsd24Hr).toFixed(2) }}
-                </td>
-                <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">
-                  <NuxtLink
-                    :to="`/asset/${fdata.id}`"
-                    class="text-indigo-600 hover:text-indigo-900"
-                  >
-                    Ver Mercado
-                  </NuxtLink>
                 </td>
               </tr>
               <!-- More rows... -->
@@ -90,18 +98,23 @@
 
 <script>
 import api from "../service/api";
+
 export default {
   data() {
     return {
-      cryptos: [],
+      assets: [],
     };
   },
 
-  methods: {},
   async mounted() {
-    const { data } = await api.get(`/assets`);
-
-    this.cryptos = data.data;
+    const id = this.$route.params.id;
+    try {
+      const { data } = await api.get(`/assets/${id}/markets`);
+      this.assets = data.data;
+      console.log(this.assets, `/assets/${id}/markets`);
+    } catch (error) {
+      console.error(error);
+    }
   },
 };
 </script>

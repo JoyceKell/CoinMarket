@@ -22,7 +22,15 @@
       <!-- Navbar -->
       <div class="hidden md:block">
         <ul class="flex space-x-8 text-sm font-sans">
-          <li><a href="#" class="">Criptoativos</a></li>
+          <li>
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/"
+              :replace="true"
+              >Criptoativos</NuxtLink
+            >
+          </li>
           <li><a href="#" class="">Estatística</a></li>
           <li><a href="#" class="">Conversor</a></li>
         </ul>
@@ -80,8 +88,13 @@
 
         <ul class="divide-y font-sans">
           <li>
-            <a href="#" @click="isOpen = false" class="my-4 inline-block"
-              >Criptoativos</a
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/"
+              class="my-4 inline-block"
+              :replace="true"
+              >Criptoativos</NuxtLink
             >
           </li>
           <li>
