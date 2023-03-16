@@ -5,8 +5,24 @@
       :highest-price="highestPrice"
       :id="id"
     />
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="flex flex-col -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+        <div class="flex justify-between space-x-4 pb-1">
+          <button
+            v-if="page > 1"
+            v-on:click="backPage"
+            class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
+          >
+            Voltar
+          </button>
+          <button
+            v-if="assets.length == this.limit"
+            v-on:click="nextPage"
+            class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
+          >
+            Avançar
+          </button>
+        </div>
         <div
           class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
         >
@@ -92,7 +108,6 @@
                   ${{ Number(fdata.volumeUsd24Hr).toFixed(2) }}
                 </td>
               </tr>
-              <!-- More rows... -->
             </tbody>
           </table>
         </div>
@@ -111,22 +126,44 @@ export default {
       lowestPrice: null,
       highestPrice: null,
       id: this.$route.params.id,
+      page: 1,
+      limit: 100,
     };
   },
+  methods: {
+    backPage() {
+      if (this.page > 0) {
+        this.page--;
+        this.loadPage();
+      }
+    },
+    nextPage() {
+      this.page++;
+      this.loadPage();
+    },
 
+    async loadPage() {
+      const offset = (this.page - 1) * this.limit;
+      api
+        .get(`/assets/${this.id}/markets?limit=${this.limit}&offset=${offset}`)
+        .then((response) => {
+          const data = response.data.data;
+
+          this.assets = data;
+          this.lowestPrice = Math.min(
+            ...this.assets.map((asset) => Number(asset.priceUsd))
+          );
+          this.highestPrice = Math.max(
+            ...this.assets.map((asset) => Number(asset.priceUsd))
+          );
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  },
   async mounted() {
-    try {
-      const { data } = await api.get(`/assets/${this.id}/markets`);
-      this.assets = data.data;
-      this.lowestPrice = Math.min(
-        ...this.assets.map((asset) => asset.priceUsd)
-      );
-      this.highestPrice = Math.max(
-        ...this.assets.map((asset) => asset.priceUsd)
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    this.loadPage();
   },
 };
 </script>

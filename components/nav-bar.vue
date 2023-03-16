@@ -31,7 +31,15 @@
               >Criptoativos</NuxtLink
             >
           </li>
-          <li><a href="#" class="">Estatística</a></li>
+          <li>
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/aggregate"
+              :replace="true"
+              >Estatística</NuxtLink
+            >
+          </li>
           <li><a href="#" class="">Conversor</a></li>
         </ul>
       </div>
@@ -98,8 +106,13 @@
             >
           </li>
           <li>
-            <a href="#" @click="isOpen = false" class="my-4 inline-block"
-              >Estatística</a
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/aggregate"
+              class="my-4 inline-block"
+              :replace="true"
+              >Estatística</NuxtLink
             >
           </li>
           <li>
