@@ -119,6 +119,8 @@
 <script>
 import api from "../service/api";
 import highestLowestPrice from "./highest-lowest-price.vue";
+const MAX_LIMIT = 2000;
+
 export default {
   data() {
     return {
@@ -131,39 +133,45 @@ export default {
     };
   },
   methods: {
-    backPage() {
-      if (this.page > 0) {
-        this.page--;
-        this.loadPage();
+    async loadFullAssets() {
+      let fullArr = [];
+      let page = 1;
+
+      let assets = await this.getAssets(page);
+
+      fullArr = [...assets];
+
+      page++;
+
+      while (assets.length === MAX_LIMIT) {
+        assets = await this.getAssets(page);
+
+        fullArr = [...fullArr, ...assets];
+
+        page++;
       }
-    },
-    nextPage() {
-      this.page++;
-      this.loadPage();
+      console.log(fullArr, "dsksakd");
+      this.assets = fullArr;
     },
 
-    async loadPage() {
-      const offset = (this.page - 1) * this.limit;
-      api
-        .get(`/assets/${this.id}/markets?limit=${this.limit}&offset=${offset}`)
-        .then((response) => {
-          const data = response.data.data;
+    async getAssets(page) {
+      let offset = (page - 1) * MAX_LIMIT;
+      const { data } = await api.get(
+        `/assets/${this.id}/markets?limit=${MAX_LIMIT}&offset=${offset}`
+      );
 
-          this.assets = data;
-          this.lowestPrice = Math.min(
-            ...this.assets.map((asset) => Number(asset.priceUsd))
-          );
-          this.highestPrice = Math.max(
-            ...this.assets.map((asset) => Number(asset.priceUsd))
-          );
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      return data.data;
     },
   },
   async mounted() {
-    this.loadPage();
+    await this.loadFullAssets();
+    this.lowestPrice = Math.min(
+      ...this.assets.map((asset) => Number(asset.priceUsd))
+    );
+    this.highestPrice = Math.max(
+      ...this.assets.map((asset) => Number(asset.priceUsd))
+    );
+    console.log(this.lowestPrice, this.highestPrice);
   },
 };
 </script>
