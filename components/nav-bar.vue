@@ -40,7 +40,15 @@
               >Estatística</NuxtLink
             >
           </li>
-          <li><a href="#" class="">Conversor</a></li>
+          <li>
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/currency-conversion"
+              :replace="true"
+              >Conversor</NuxtLink
+            >
+          </li>
         </ul>
       </div>
 
@@ -116,8 +124,12 @@
             >
           </li>
           <li>
-            <a href="#" @click="isOpen = false" class="my-4 inline-block"
-              >Conversor</a
+            <NuxtLink
+              @click.prevent="isOpen = false"
+              exact
+              to="/currency-conversion"
+              :replace="true"
+              >Conversor</NuxtLink
             >
           </li>
         </ul>
