@@ -1,12 +1,13 @@
 <template>
   <div class="flex flex-col">
     <highestLowestPrice
+      :id="id"
       :lowest-price="lowestPrice"
       :highest-price="highestPrice"
-      :id="id"
+      :is-loading="isLoading"
     />
     <div
-      v-if="!this.isLoading"
+      v-if="!isLoading"
       class="flex flex-col -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8"
     >
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -50,11 +51,11 @@
                 </th>
                 <th
                   class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                ></th>
+                />
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <tr :key="fdata.id" v-for="fdata in this.assets">
+              <tr v-for="fdata in assets" :key="fdata.id">
                 <td class="px-6 py-4 whitespace-no-wrap">
                   <div class="flex items-center">
                     <div class="ml-4">
@@ -75,7 +76,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap">
                   <div class="text-sm text-gray-900">
-                    ${{ fdata.priceUsd | toNumberFixed }}
+                    ${{ toNumberFixed(fdata.priceUsd) }}
                   </div>
                   <div class="text-sm text-gray-500">USD</div>
                 </td>
@@ -88,11 +89,11 @@
                         fdata.changePercent24Hr < 0,
                     }"
                   >
-                    {{ fdata.volumePercent | toNumberFixed }}%
+                    {{ toNumberFixed(fdata.volumePercent) }}%
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">
-                  ${{ fdata.volumeUsd24Hr | toNumberFixed }}
+                  ${{ toNumberFixed(fdata.volumeUsd24Hr) }}
                 </td>
               </tr>
             </tbody>
@@ -104,16 +105,20 @@
 </template>
 
 <script>
-import highestLowestPrice from "./highest-lowest-price.vue";
+import highestLowestPrice from "./highest-lowest-price-component.vue";
 import LoadAllData from "../mixins/load-all-data";
+import FormatNumber from "../mixins/format-number";
 
 export default {
-  mixins: [LoadAllData],
+  components: {
+    highestLowestPrice,
+  },
+  mixins: [LoadAllData, FormatNumber],
   data() {
     return {
       assets: [],
-      lowestPrice: null,
-      highestPrice: null,
+      lowestPrice: 0,
+      highestPrice: 0,
       id: this.$route.params.id,
       page: 1,
       limit: 100,

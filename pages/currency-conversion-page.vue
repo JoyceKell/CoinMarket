@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Conversion from "../components/conversion.vue";
+import Conversion from "../components/conversion-component.vue";
 export default {
   components: {
     Conversion,

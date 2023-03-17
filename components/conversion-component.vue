@@ -1,6 +1,8 @@
 <template>
   <div class="p-4 md:p-8">
-    <h2 class="text-2xl font-bold mb-4">Conversor de Moedas</h2>
+    <h2 class="text-2xl font-bold mb-4">
+      Conversor de Moedas
+    </h2>
     <div class="flex flex-col md:flex-row md:space-x-4">
       <div class="w-full md:w-1/3 mb-4 md:mb-0">
         <label
@@ -10,11 +12,11 @@
           Quantidade:
         </label>
         <input
-          type="number"
-          v-model="amount"
           id="amount"
+          v-model="amount"
+          type="number"
           class="border border-gray-300 rounded-md p-2 w-full"
-        />
+        >
       </div>
       <div class="w-full md:w-1/3 mb-4 md:mb-0">
         <label
@@ -24,8 +26,8 @@
           Moeda Base:
         </label>
         <select
-          v-model="baseCurrency"
           id="base-currency"
+          v-model="baseCurrency"
           class="border border-gray-300 rounded-md p-2 w-full"
         >
           <option
@@ -45,8 +47,8 @@
           Moeda de Destino:
         </label>
         <select
-          v-model="targetCurrency"
           id="target-currency"
+          v-model="targetCurrency"
           class="border border-gray-300 rounded-md p-2 w-full"
         >
           <option
@@ -61,9 +63,9 @@
     </div>
     <div class="mt-4">
       <button
-        @click="convertCurrency"
         class="bg-blue-500 hover:bg-blue-600 text-white rounded-md py-2 px-4"
-        :disabled="!this.targetCurrency || !this.baseCurrency"
+        :disabled="!targetCurrency || !baseCurrency"
+        @click="convertCurrency"
       >
         Converter
       </button>
@@ -73,9 +75,9 @@
       class="mt-4 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 bg-white rounded-lg shadow-lg p-6"
     >
       <p class="text-lg">
-        {{ this.conversion.value }} {{ this.conversion.baseSymbol }} equivale à
-        {{ this.conversion.result }}
-        {{ this.conversion.targetSymbol }}
+        {{ conversion.value }} {{ conversion.baseSymbol }} equivale à
+        {{ conversion.result }}
+        {{ conversion.targetSymbol }}
       </p>
     </div>
   </div>

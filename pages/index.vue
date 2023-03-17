@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div>
     <CryptoList />
@@ -5,7 +6,7 @@
 </template>
 
 <script>
-import CryptoList from "../components/cripto-list.vue";
+import CryptoList from "../components/cripto-list-component.vue";
 import "../filters";
 export default {
   components: {

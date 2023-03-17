@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Aggregate from "../components/aggregate.vue";
+import Aggregate from "../components/aggregate-component.vue";
 export default {
   components: {
     Aggregate,

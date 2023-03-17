@@ -1,8 +1,8 @@
 <template>
   <div class="py-8">
     <p
+      v-if="isLoading"
       class="max-w-2xl text-center mx-auto px-4 sm:px-6 lg:px-8"
-      v-if="!lowestPrice"
     >
       Carregando...
     </p>
@@ -14,22 +14,18 @@
         <p class="text-gray-700 text-lg mb-2">
           Maior Preço:
           <span class="font-medium text-gray-900">
-            $ {{ highestPrice | toNumberFixed }}</span
-          >
+            $ {{ toNumberFixed(highestPrice) }}
+          </span>
         </p>
         <p class="text-gray-700 text-lg mb-2">
           Menor Preço:
           <span class="font-medium text-gray-900">
-            $ {{ lowestPrice | toNumberFixed }}</span
-          >
+            $ {{ toNumberFixed(lowestPrice) }}
+          </span>
         </p>
         <p class="text-gray-700 text-lg">
           Percentual da diferença:
-          <span class="text-green-600 font-medium">
-            {{
-              (((highestPrice - lowestPrice) / lowestPrice) * 100).toFixed(2)
-            }}%
-          </span>
+          <span class="text-green-600 font-medium"> {{ percentDiff }}% </span>
         </p>
       </div>
     </div>
@@ -37,16 +33,33 @@
 </template>
 
 <script>
+import FormatNumber from "../mixins/format-number";
 export default {
+  mixins: [FormatNumber],
   props: {
     lowestPrice: {
+      type: Number,
       required: true,
     },
     highestPrice: {
+      type: Number,
       required: true,
     },
     id: {
+      type: String,
       required: true,
+    },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    percentDiff() {
+      return (
+        ((this.highestPrice - this.lowestPrice) / this.lowestPrice) *
+        100
+      ).toFixed(2);
     },
   },
 };

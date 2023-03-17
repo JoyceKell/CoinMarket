@@ -1,21 +1,24 @@
 <template>
   <div class="flex flex-col">
-    <div class="text-center" v-if="isLoading">
+    <div
+      v-if="isLoading"
+      class="text-center"
+    >
       <p>Carregando...</p>
     </div>
     <div v-else>
       <div class="flex justify-between space-x-4 pb-1">
         <button
           v-if="page > 1"
-          v-on:click="backPage"
           class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
+          @click="backPage"
         >
           Voltar
         </button>
         <button
           v-if="cryptos.length == 100"
-          v-on:click="nextPage"
           class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
+          @click="nextPage"
         >
           Avançar
         </button>
@@ -53,11 +56,14 @@
                   </th>
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  ></th>
+                  />
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                <tr :key="fdata.rank" v-for="fdata in this.cryptos">
+                <tr
+                  v-for="fdata in cryptos"
+                  :key="fdata.rank"
+                >
                   <td class="px-6 py-4 whitespace-no-wrap">
                     <div class="flex items-center">
                       <div class="ml-4">
@@ -72,9 +78,11 @@
                   </td>
                   <td class="px-6 py-4 whitespace-no-wrap">
                     <div class="text-sm text-gray-900">
-                      ${{ fdata.priceUsd | toNumberFixed }}
+                      ${{ toNumberFixed(fdata.priceUsd) }}
                     </div>
-                    <div class="text-sm text-gray-500">USD</div>
+                    <div class="text-sm text-gray-500">
+                      USD
+                    </div>
                   </td>
                   <td class="px-6 py-4 whitespace-no-wrap">
                     <span
@@ -85,13 +93,13 @@
                           fdata.changePercent24Hr < 0,
                       }"
                     >
-                      {{ fdata.changePercent24Hr | toNumberFixed }}%
+                      {{ toNumberFixed(fdata.changePercent24Hr) }}%
                     </span>
                   </td>
                   <td
                     class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500"
                   >
-                    ${{ fdata.volumeUsd24Hr | toNumberFixed }}
+                    ${{ toNumberFixed(fdata.volumeUsd24Hr) }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500"
@@ -115,7 +123,9 @@
 
 <script>
 import api from "../service/api";
+import FormatNumber from "../mixins/format-number";
 export default {
+  mixins: [FormatNumber],
   data() {
     return {
       cryptos: [],
@@ -123,6 +133,9 @@ export default {
       limit: 100,
       isLoading: true,
     };
+  },
+  async mounted() {
+    this.loadPage();
   },
 
   methods: {
@@ -146,9 +159,6 @@ export default {
       this.cryptos = data.data;
       this.isLoading = false;
     },
-  },
-  async mounted() {
-    this.loadPage();
   },
 };
 </script>

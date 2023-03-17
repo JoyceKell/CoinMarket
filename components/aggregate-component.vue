@@ -1,6 +1,11 @@
 <template>
   <div class="py-8">
-    <div class="text-center" v-if="isLoading"><p>Carregando...</p></div>
+    <div
+      v-if="isLoading"
+      class="text-center"
+    >
+      <p>Carregando...</p>
+    </div>
     <div v-else>
       <h1 class="text-3xl font-bold mb-4 text-center mx-auto">
         Valores Agregados do Mercado
@@ -32,8 +37,7 @@
                 : 'text-red-500',
               'font-bold',
             ]"
-            >{{ agregatted.changePercent24Hr }}%</span
-          >
+          >{{ agregatted.changePercent24Hr }}%</span>
         </li>
       </ul>
     </div>
@@ -59,6 +63,18 @@ export default {
       isLoading: true,
     };
   },
+  async mounted() {
+    try {
+      this.fullAssets = await this.loadFull("/assets");
+      this.numAssets = this.fullAssets.length;
+      this.numAssetsOver10bn = this.fullAssets.filter(
+        (asset) => asset.marketCapUsd > MAX_MARKETCAP_USD
+      ).length;
+      this.sumDataAssets();
+    } finally {
+      this.isLoading = false;
+    }
+  },
   methods: {
     sumDataAssetsFromKey(key) {
       const sum = (total, asset) => total + Number(asset[key]);
@@ -72,18 +88,6 @@ export default {
         this.agregatted[key] = this.sumDataAssetsFromKey(key);
       });
     },
-  },
-  async mounted() {
-    try {
-      this.fullAssets = await this.loadFull("/assets");
-      this.numAssets = this.fullAssets.length;
-      this.numAssetsOver10bn = this.fullAssets.filter(
-        (asset) => asset.marketCapUsd > MAX_MARKETCAP_USD
-      ).length;
-      this.sumDataAssets();
-    } finally {
-      this.isLoading = false;
-    }
   },
 };
 </script>

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import AssetList from "../../components/asset-list.vue";
+import AssetList from "../../components/asset-list-component.vue";
 
 export default {
   components: {

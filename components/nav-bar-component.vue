@@ -12,7 +12,7 @@
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path d="M4 6h16M4 12h16M4 18h16"></path>
+            <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
@@ -21,30 +21,33 @@
         <ul class="flex space-x-8 text-sm font-sans">
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
               to="/"
               :replace="true"
-              >Criptoativos</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Criptoativos
+            </NuxtLink>
           </li>
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
-              to="/aggregate"
+              to="/aggregate-page"
               :replace="true"
-              >Estatística</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Estatística
+            </NuxtLink>
           </li>
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
-              to="/currency-conversion"
+              to="/currency-conversion-page"
               :replace="true"
-              >Conversor</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Conversor
+            </NuxtLink>
           </li>
         </ul>
       </div>
@@ -58,15 +61,15 @@
         leave-to-class="opacity-0"
       >
         <div
-          @keydown.esc="isOpen = false"
           v-show="isOpen"
           class="z-10 fixed inset-0 transition-opacity"
+          @keydown.esc="isOpen = false"
         >
           <div
-            @click="isOpen = false"
             class="absolute inset-0 bg-black opacity-50"
             tabindex="0"
-          ></div>
+            @click="isOpen = false"
+          />
         </div>
       </transition>
 
@@ -88,46 +91,48 @@
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path d="M6 18L18 6M6 6l12 12"></path>
+              <path d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         <span
-          @click="isOpen = false"
           class="flex w-full items-center p-4 border-b"
-        >
-        </span>
+          @click="isOpen = false"
+        />
 
         <ul class="divide-y font-sans">
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
               to="/"
               class="my-4 inline-block"
               :replace="true"
-              >Criptoativos</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Criptoativos
+            </NuxtLink>
           </li>
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
-              to="/aggregate"
+              to="/aggregate-page"
               class="my-4 inline-block"
               :replace="true"
-              >Estatística</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Estatística
+            </NuxtLink>
           </li>
           <li>
             <NuxtLink
-              @click.prevent="isOpen = false"
               exact
-              to="/currency-conversion"
+              to="/currency-conversion-page"
               :replace="true"
-              >Conversor</NuxtLink
+              @click.prevent="isOpen = false"
             >
+              Conversor
+            </NuxtLink>
           </li>
         </ul>
       </aside>
@@ -141,11 +146,6 @@ export default {
     return {
       isOpen: false,
     };
-  },
-  methods: {
-    drawer() {
-      this.isOpen = !this.isOpen;
-    },
   },
   watch: {
     isOpen: {
@@ -162,6 +162,11 @@ export default {
     document.addEventListener("keydown", (e) => {
       if (e.keyCode == 27 && this.isOpen) this.isOpen = false;
     });
+  },
+  methods: {
+    drawer() {
+      this.isOpen = !this.isOpen;
+    },
   },
 };
 </script>

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div>
     <Navbar />
@@ -8,7 +9,7 @@
 </template>
 
 <script>
-import Navbar from "@/components/nav-bar.vue";
+import Navbar from "@/components/nav-bar-component.vue";
 
 export default {
   components: {
