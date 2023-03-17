@@ -41,12 +41,11 @@
 </template>
 
 <script>
-import api from "../service/api";
-
-const MAX_LIMIT = 2000;
+import LoadAllData from "../mixins/load-all-data";
 const MAX_MARKETCAP_USD = 10000000000;
 
 export default {
+  mixins: [LoadAllData],
   data() {
     return {
       numAssets: 0,
@@ -61,20 +60,6 @@ export default {
     };
   },
   methods: {
-    async loadFullAssets(page = 1, previousData = []) {
-      if (page > 1 && previousData.length < MAX_LIMIT) return [];
-      const currentAssets = await this.getAssets(page);
-      const previousAssets = await this.loadFullAssets(++page, currentAssets);
-      return [...previousAssets, ...currentAssets];
-    },
-    async getAssets(page) {
-      const offset = (page - 1) * MAX_LIMIT;
-      const RESOURCE = "/assets";
-      const {
-        data: { data },
-      } = await api.get(`${RESOURCE}?limit=${MAX_LIMIT}&offset=${offset}`);
-      return data;
-    },
     sumDataAssetsFromKey(key) {
       const sum = (total, asset) => total + Number(asset[key]);
       const totalSum = this.fullAssets.reduce(sum, 0);
@@ -90,7 +75,7 @@ export default {
   },
   async mounted() {
     try {
-      this.fullAssets = await this.loadFullAssets();
+      this.fullAssets = await this.loadFull("/assets");
       this.numAssets = this.fullAssets.length;
       this.numAssetsOver10bn = this.fullAssets.filter(
         (asset) => asset.marketCapUsd > MAX_MARKETCAP_USD

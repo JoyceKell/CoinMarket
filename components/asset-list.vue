@@ -104,11 +104,11 @@
 </template>
 
 <script>
-import api from "../service/api";
 import highestLowestPrice from "./highest-lowest-price.vue";
-const MAX_LIMIT = 2000;
+import LoadAllData from "../mixins/load-all-data";
 
 export default {
+  mixins: [LoadAllData],
   data() {
     return {
       assets: [],
@@ -120,48 +120,19 @@ export default {
       isLoading: true,
     };
   },
-  methods: {
-    async loadFullAssets() {
-      this.isLoading = true;
-      let fullArr = [];
-      let page = 1;
-
-      let assets = await this.getAssets(page);
-
-      fullArr = [...assets];
-
-      page++;
-
-      while (assets.length === MAX_LIMIT) {
-        assets = await this.getAssets(page);
-
-        fullArr = [...fullArr, ...assets];
-
-        page++;
-      }
-
-      this.assets = fullArr;
-      this.isLoading = false;
-    },
-
-    async getAssets(page) {
-      let offset = (page - 1) * MAX_LIMIT;
-      const { data } = await api.get(
-        `/assets/${this.id}/markets?limit=${MAX_LIMIT}&offset=${offset}`
-      );
-
-      return data.data;
-    },
-  },
   async mounted() {
-    await this.loadFullAssets();
-    this.isLoading = false;
-    this.lowestPrice = Math.min(
-      ...this.assets.map((asset) => Number(asset.priceUsd))
-    );
-    this.highestPrice = Math.max(
-      ...this.assets.map((asset) => Number(asset.priceUsd))
-    );
+    try {
+      this.assets = await this.loadFull(`/assets/${this.id}/markets`);
+
+      this.lowestPrice = Math.min(
+        ...this.assets.map((asset) => Number(asset.priceUsd))
+      );
+      this.highestPrice = Math.max(
+        ...this.assets.map((asset) => Number(asset.priceUsd))
+      );
+    } finally {
+      this.isLoading = false;
+    }
   },
 };
 </script>
