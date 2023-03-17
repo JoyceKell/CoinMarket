@@ -5,24 +5,11 @@
       :highest-price="highestPrice"
       :id="id"
     />
-    <div class="flex flex-col -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div
+      v-if="!this.isLoading"
+      class="flex flex-col -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8"
+    >
       <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-        <div class="flex justify-between space-x-4 pb-1">
-          <button
-            v-if="page > 1"
-            v-on:click="backPage"
-            class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
-          >
-            Voltar
-          </button>
-          <button
-            v-if="assets.length == this.limit"
-            v-on:click="nextPage"
-            class="bg-gray-200 text-gray-700 px-4 py-1 rounded-md hover:bg-gray-300 focus:bg-gray-300"
-          >
-            Avançar
-          </button>
-        </div>
         <div
           class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
         >
@@ -130,10 +117,12 @@ export default {
       id: this.$route.params.id,
       page: 1,
       limit: 100,
+      isLoading: true,
     };
   },
   methods: {
     async loadFullAssets() {
+      this.isLoading = true;
       let fullArr = [];
       let page = 1;
 
@@ -152,6 +141,7 @@ export default {
       }
 
       this.assets = fullArr;
+      this.isLoading = false;
     },
 
     async getAssets(page) {
@@ -165,6 +155,7 @@ export default {
   },
   async mounted() {
     await this.loadFullAssets();
+    this.isLoading = false;
     this.lowestPrice = Math.min(
       ...this.assets.map((asset) => Number(asset.priceUsd))
     );

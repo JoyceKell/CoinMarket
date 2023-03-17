@@ -1,6 +1,9 @@
 <template>
   <div class="py-8">
-    <p class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8" v-if="!lowestPrice">
+    <p
+      class="max-w-2xl text-center mx-auto px-4 sm:px-6 lg:px-8"
+      v-if="!lowestPrice"
+    >
       Carregando...
     </p>
     <div v-else class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">

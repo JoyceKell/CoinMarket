@@ -16,20 +16,23 @@
           <span class="font-bold">{{ numAssetsOver10bn }}</span>
         </li>
         <li class="mb-4 text-lg">
-          Supply agregado: <span class="font-bold">{{ supplyAgregado }}</span>
+          Supply agregado:
+          <span class="font-bold">{{ agregatted.supply }}</span>
         </li>
         <li class="mb-4 text-lg">
           Capital de mercado agregado:
-          <span class="font-bold">{{ capitalAgregado }}</span>
+          <span class="font-bold">{{ agregatted.marketCapUsd }}</span>
         </li>
         <li class="mb-4 text-lg">
           Diferença percentual em 24h agregada:
           <span
             :class="[
-              diff24hAgregada > 0 ? 'text-green-500' : 'text-red-500',
+              agregatted.changePercent24Hr > 0
+                ? 'text-green-500'
+                : 'text-red-500',
               'font-bold',
             ]"
-            >{{ diff24hAgregada }}%</span
+            >{{ agregatted.changePercent24Hr }}%</span
           >
         </li>
       </ul>
@@ -41,65 +44,61 @@
 import api from "../service/api";
 
 const MAX_LIMIT = 2000;
+const MAX_MARKETCAP_USD = 10000000000;
 
 export default {
   data() {
     return {
       numAssets: 0,
       numAssetsOver10bn: 0,
-      supplyAgregado: 0,
-      capitalAgregado: 0,
-      diff24hAgregada: 0,
+      agregatted: {
+        supply: 0,
+        marketCapUsd: 0,
+        changePercent24Hr: 0,
+      },
       fullAssets: [],
       isLoading: true,
     };
   },
   methods: {
-    async loadFullAssets() {
-      let fullArr = [];
-      let page = 1;
-
-      let assets = await this.getAssets(page);
-
-      fullArr = [...assets];
-
-      page++;
-
-      while (assets.length === MAX_LIMIT) {
-        assets = await this.getAssets(page);
-
-        fullArr = [...fullArr, ...assets];
-
-        page++;
-      }
-
-      this.fullAssets = fullArr;
+    async loadFullAssets(page = 1, previousData = []) {
+      if (page > 1 && previousData.length < MAX_LIMIT) return [];
+      const currentAssets = await this.getAssets(page);
+      const previousAssets = await this.loadFullAssets(++page, currentAssets);
+      return [...previousAssets, ...currentAssets];
     },
     async getAssets(page) {
-      let offset = (page - 1) * MAX_LIMIT;
-      const { data } = await api.get(
-        `/assets?limit=${MAX_LIMIT}&offset=${offset}`
-      );
+      const offset = (page - 1) * MAX_LIMIT;
+      const RESOURCE = "/assets";
+      const {
+        data: { data },
+      } = await api.get(`${RESOURCE}?limit=${MAX_LIMIT}&offset=${offset}`);
+      return data;
+    },
+    sumDataAssetsFromKey(key) {
+      const sum = (total, asset) => total + Number(asset[key]);
+      const totalSum = this.fullAssets.reduce(sum, 0);
+      return totalSum.toFixed(2);
+    },
+    sumDataAssets() {
+      const assetKeys = ["supply", "marketCapUsd", "changePercent24Hr"];
 
-      return data.data;
+      assetKeys.forEach((key) => {
+        this.agregatted[key] = this.sumDataAssetsFromKey(key);
+      });
     },
   },
   async mounted() {
-    await this.loadFullAssets();
-    this.isLoading = false;
-    this.numAssets = this.fullAssets.length;
-    this.numAssetsOver10bn = this.fullAssets.filter(
-      (asset) => asset.marketCapUsd > 10000000000
-    ).length;
-    this.supplyAgregado = this.fullAssets
-      .reduce((total, asset) => total + Number(asset.supply), 0)
-      .toFixed(2);
-    this.capitalAgregado = this.fullAssets
-      .reduce((total, asset) => total + Number(asset.marketCapUsd), 0)
-      .toFixed(2);
-    this.diff24hAgregada = this.fullAssets
-      .reduce((total, asset) => total + Number(asset.changePercent24Hr), 0)
-      .toFixed(2);
+    try {
+      this.fullAssets = await this.loadFullAssets();
+      this.numAssets = this.fullAssets.length;
+      this.numAssetsOver10bn = this.fullAssets.filter(
+        (asset) => asset.marketCapUsd > MAX_MARKETCAP_USD
+      ).length;
+      this.sumDataAssets();
+    } finally {
+      this.isLoading = false;
+    }
   },
 };
 </script>
