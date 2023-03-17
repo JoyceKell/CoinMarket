@@ -82,10 +82,10 @@
 </template>
 
 <script>
-import api from "../service/api";
-const MAX_LIMIT = 2000;
+import LoadAllData from "../mixins/load-all-data";
 
 export default {
+  mixins: [LoadAllData],
   data() {
     return {
       amount: 1,
@@ -98,37 +98,9 @@ export default {
   },
 
   async mounted() {
-    this.loadFullAssets();
+    this.currencies = await this.loadFull("/assets");
   },
   methods: {
-    async getAssets(page) {
-      let offset = (page - 1) * MAX_LIMIT;
-      const { data } = await api.get(
-        `/assets?limit=${MAX_LIMIT}&offset=${offset}`
-      );
-
-      return data.data;
-    },
-    async loadFullAssets() {
-      let fullArr = [];
-      let page = 1;
-
-      let assets = await this.getAssets(page);
-
-      fullArr = [...assets];
-
-      page++;
-
-      while (assets.length === MAX_LIMIT) {
-        assets = await this.getAssets(page);
-
-        fullArr = [...fullArr, ...assets];
-        page++;
-      }
-
-      this.currencies = fullArr;
-    },
-
     async convertCurrency() {
       this.result = (
         (this.amount * Number(this.baseCurrency.priceUsd)) /

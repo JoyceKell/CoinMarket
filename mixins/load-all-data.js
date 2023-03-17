@@ -11,7 +11,7 @@ export default {
         ++page,
         currentAssets
       );
-      return [...previousAssets, ...currentAssets];
+      return [...currentAssets, ...previousAssets];
     },
 
     async getData(page, resources) {
