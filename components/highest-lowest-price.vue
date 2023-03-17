@@ -14,13 +14,13 @@
         <p class="text-gray-700 text-lg mb-2">
           Maior Preço:
           <span class="font-medium text-gray-900">
-            $ {{ Number(highestPrice).toFixed(2) }}</span
+            $ {{ highestPrice | toNumberFixed }}</span
           >
         </p>
         <p class="text-gray-700 text-lg mb-2">
           Menor Preço:
           <span class="font-medium text-gray-900">
-            $ {{ Number(lowestPrice).toFixed(2) }}</span
+            $ {{ lowestPrice | toNumberFixed }}</span
           >
         </p>
         <p class="text-gray-700 text-lg">

@@ -17,7 +17,6 @@
         </button>
       </div>
 
-      <!-- Navbar -->
       <div class="hidden md:block">
         <ul class="flex space-x-8 text-sm font-sans">
           <li>

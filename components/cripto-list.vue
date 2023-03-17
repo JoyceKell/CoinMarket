@@ -72,7 +72,7 @@
                   </td>
                   <td class="px-6 py-4 whitespace-no-wrap">
                     <div class="text-sm text-gray-900">
-                      ${{ Number(fdata.priceUsd).toFixed(2) }}
+                      ${{ fdata.priceUsd | toNumberFixed }}
                     </div>
                     <div class="text-sm text-gray-500">USD</div>
                   </td>
@@ -85,13 +85,13 @@
                           fdata.changePercent24Hr < 0,
                       }"
                     >
-                      {{ Number(fdata.changePercent24Hr).toFixed(2) }}%
+                      {{ fdata.changePercent24Hr | toNumberFixed }}%
                     </span>
                   </td>
                   <td
                     class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500"
                   >
-                    ${{ Number(fdata.volumeUsd24Hr).toFixed(2) }}
+                    ${{ fdata.volumeUsd24Hr | toNumberFixed }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500"
@@ -104,7 +104,6 @@
                     </NuxtLink>
                   </td>
                 </tr>
-                <!-- More rows... -->
               </tbody>
             </table>
           </div>
